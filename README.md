@@ -881,101 +881,65 @@ npm install bootstrap@5
 
 ---
 
-### Paso 3.5: Usar el Agente @frontend-ins 🎨
+### Paso 3.5: Crear la aplicación frontend completa 🎨
 
-> **💡 IMPORTANTE:** A partir de ahora, usa el agente especializado escribiendo `@frontend-ins` al inicio de cada prompt relacionado con frontend.
+> **💡 IMPORTANTE:** Usa el agente especializado escribiendo `@frontend-ins` al inicio del prompt. Con un solo prompt, Copilot generará toda la estructura del frontend.
 
 **🤖 PROMPT con Agente:**
 
 ```
-@frontend-ins Crea el archivo de estilos principal para el proyecto web.
+@frontend-ins Crea la aplicación frontend completa del Sistema de Seguros de Vehículos del INS dentro del proyecto React en src/ins-seguros-web.
 
-Necesito un archivo CSS que:
-- Defina variables con la paleta de colores institucional
-- Incluya un reset CSS básico
-- Configure la tipografía base importando las fuentes necesarias
-- Tenga clases reutilizables para los componentes principales: botones, tarjetas, encabezado, navegación, pie de página y tablas
-- Incluya clases utilitarias para layout y espaciado
-- Agregue animaciones sutiles para transiciones y estados de carga
+Necesito que generes TODO lo siguiente en un solo paso:
 
-Usa los estilos definidos en el agente frontend-ins.md
+## 1. Estilos (src/styles/tema-ins.css)
+- Variables CSS con la paleta de colores institucional del INS
+- Reset CSS básico y tipografía base (Google Fonts: Montserrat y Open Sans)
+- Clases para componentes: botones, tarjetas, header, footer, tablas
+- Animaciones para transiciones y estados de carga
+
+## 2. Layout Principal (src/components/layout/)
+- Header institucional con logo, título "Sistema de Seguros de Vehículos" y navegación
+- Footer con enlaces legales, contacto y copyright "© Grupo INS"
+- Layout wrapper que envuelva todas las páginas
+
+## 3. Componentes Reutilizables (src/components/compartidos/)
+- **TarjetaPoliza**: Card con número de póliza, tipo de seguro, vehículo, fechas, badge de estado con color, y botones de acción (ver, editar, eliminar)
+- **IndicadorCarga**: Spinner con mensaje personalizable
+- **ModalConfirmacion**: Modal para confirmar eliminación de pólizas
+
+## 4. Página de Inicio (src/components/paginas/Inicio.tsx) — ruta "/"
+- Sección hero con título y botón "Registrar Nuevo Seguro"
+- Estadísticas destacadas (pólizas activas, vehículos asegurados)
+- Pólizas destacadas usando TarjetaPoliza con datos de ejemplo
+
+## 5. Página de Pólizas (src/components/paginas/Polizas.tsx) — ruta "/polizas"
+- Filtros: dropdown tipo de seguro, dropdown estado, búsqueda por texto
+- Grid responsive de TarjetaPoliza
+- Botón "Nueva Póliza" que abre formulario/modal
+- Acciones por póliza: ver detalle, editar, eliminar (con confirmación)
+- Estados: carga, vacío, error con reintento
+
+## 6. Configuración
+- App.tsx con React Router (rutas: /, /polizas, /polizas/:id)
+- Importar Bootstrap 5 y tema-ins.css
+- index.html con meta tags en español, título "Sistema de Seguros de Vehículos - Grupo INS"
+- Archivo .env con VITE_API_URL=https://localhost:5001
+
+Usa datos de ejemplo hardcodeados (mock) para todas las páginas por ahora.
+Todos los textos en español. Usa hooks de React (useState, useEffect).
 ```
 
 ---
 
-### Paso 3.6: Crear Layout Principal
+### Paso 3.6: Crear servicio HTTP y conectar con la API
+
+> **💡 CONCEPTO:** Ahora conectamos el frontend con la API REST creada en el Laboratorio 2 mediante un servicio TypeScript.
 
 **🤖 PROMPT con Agente:**
 
 ```
-@frontend-ins Crea el layout principal de la aplicación React.
-
-Quiero un diseño que replique la estructura del sitio oficial del INS con:
-
-- Un encabezado institucional con el logo, título del sistema y navegación principal
-- Una barra secundaria con breadcrumbs para mostrar la ubicación actual
-- Un área de contenido principal centrada y con buen espaciado
-- Un pie de página institucional con logo, enlaces legales, contacto y copyright
-
-El layout debe ser completamente responsive y usar los estilos definidos en el tema CSS
-```
-
----
-
-### Paso 3.7: Crear Componentes Reutilizables
-
-**🤖 PROMPT con Agente:**
-
-```
-@frontend-ins Crea componentes React reutilizables para el sistema de seguros de vehículos.
-
-Necesito los siguientes componentes:
-
-1. **Tarjeta de Póliza**: Un componente que muestre la información de una póliza de seguro en formato card, incluyendo número de póliza, tipo de seguro, vehículo asegurado, fechas de vigencia, un badge de estado con colores según el estado, y un botón de acción que cambie según si la póliza está activa o vencida
-
-2. **Widget de Estadística**: Un componente para mostrar métricas destacadas con un número grande, título descriptivo e ícono. Ideal para dashboards
-
-3. **Indicador de Carga**: Un componente simple con spinner y mensaje personalizable para mostrar estados de carga
-
-Todos los componentes deben:
-- Recibir parámetros apropiados
-- Usar los estilos del tema INS
-- Ser responsive
-- Tener documentación básica
-```
-
----
-
-### Paso 3.8: Crear Página Principal
-
-**🤖 PROMPT con Agente:**
-
-```
-@frontend-ins Crea la página de inicio del Sistema de Seguros de Vehículos.
-
-La página debe incluir:
-
-1. Una sección hero llamativa con título, subtítulo motivacional sobre la importancia de asegurar tu vehículo, y un botón para registrar un nuevo seguro
-
-2. Una sección de estadísticas destacadas usando los widgets, mostrando métricas como pólizas activas, vehículos asegurados, provincias cubiertas y reclamos procesados (usa datos de ejemplo por ahora)
-
-3. Una sección que muestre las pólizas destacadas usando el componente de tarjeta, con datos de ejemplo hardcodeados
-
-4. Una sección informativa explicando los beneficios de los diferentes tipos de seguros de vehículos
-
-5. Un call-to-action final para contacto
-
-La página debe ser la ruta principal ("/") usando React Router y ser completamente responsive
-```
-
----
-
-### Paso 3.9: Crear Servicio HTTP
-
-**🤖 PROMPT con Agente:**
-
-```
-@frontend-ins Crea un servicio TypeScript para consumir la API REST de seguros de vehículos.
+@frontend-ins Crea el servicio HTTP para conectar el frontend con la API de seguros de vehículos y reemplaza los datos mock.
 
 ## API a consumir
 El frontend consume la API REST de INS.SegurosVehiculos.API:
@@ -986,102 +950,32 @@ El frontend consume la API REST de INS.SegurosVehiculos.API:
 - DELETE /api/v1/polizas/{id} — eliminar póliza
 - GET /api/v1/vehiculos — listar vehículos
 
-El servicio debe:
+## Implementación requerida
 
-1. Definir interfaces TypeScript para representar pólizas, vehículos y respuestas de la API
+### 1. Modelos TypeScript (src/models/)
+- Poliza: id, numeroPoliza, tipoSeguro, estado, fechaInicio, fechaVencimiento, prima, vehiculoId
+- Vehiculo: id, placa, marca, modelo, anio, propietario
+- CrearPolizaSolicitud, ActualizarPolizaSolicitud
 
-2. Crear un servicio con métodos para todas las operaciones CRUD:
-   - Obtener lista de pólizas
-   - Obtener una póliza por su ID
-   - Crear una nueva póliza
-   - Actualizar una póliza existente
-   - Eliminar una póliza
-   - Obtener lista de vehículos
+### 2. Servicio (src/services/polizaServicio.ts)
+Métodos con fetch y tipado estricto:
+- obtenerPolizas(): Promise<Poliza[]>
+- obtenerPolizaPorId(id: number): Promise<Poliza>
+- crearPoliza(solicitud: CrearPolizaSolicitud): Promise<Poliza>
+- actualizarPoliza(id: number, solicitud: ActualizarPolizaSolicitud): Promise<Poliza>
+- eliminarPoliza(id: number): Promise<void>
+- obtenerVehiculos(): Promise<Vehiculo[]>
 
-3. Implementar usando fetch con:
-   - Manejo de errores apropiado
-   - Tipado TypeScript estricto
-   - URL base configurable vía variable de entorno (VITE_API_URL)
+URL base desde import.meta.env.VITE_API_URL con manejo de errores apropiado.
 
-Por ahora, implementa con datos de ejemplo hardcodeados (mock) para poder probar sin la API. Incluye comentarios indicando dónde conectar con la API real
+### 3. Actualizar las páginas
+- Reemplaza los datos mock en Inicio.tsx y Polizas.tsx para que consuman el servicio real
+- Mantén los estados de carga y error que ya existen
 ```
 
 ---
 
-### Paso 3.10: Crear Página de Listado de Pólizas
-
-**🤖 PROMPT con Agente:**
-
-```
-@frontend-ins Crea una página React completa para listar, buscar y gestionar pólizas de seguro.
-
-La página necesita:
-
-1. Un encabezado con título, subtítulo y contador de resultados encontrados
-
-2. Una barra de filtros con:
-   - Dropdown para filtrar por tipo de seguro
-   - Dropdown para filtrar por estado de la póliza
-   - Campo de búsqueda por texto (número de póliza, placa)
-   - Botones para buscar y limpiar filtros
-
-3. Un grid responsive de tarjetas de póliza usando el componente creado anteriormente
-
-4. Botón para crear nueva póliza que abra un formulario/modal
-
-5. Acciones por póliza: ver detalle, editar y eliminar (con confirmación)
-
-6. Manejo de diferentes estados:
-   - Estado de carga con spinner
-   - Estado vacío cuando no hay resultados
-   - Estado de error con opción de reintentar
-
-Usa hooks de React (useState, useEffect) y el servicio HTTP creado anteriormente
-```
-
----
-
-### Paso 3.11: Configurar App.tsx y Rutas
-
-**🤖 PROMPT con Agente:**
-
-```
-@frontend-ins Configura el archivo App.tsx del proyecto React para:
-
-1. Configurar React Router con las siguientes rutas:
-   - / → Página de Inicio
-   - /polizas → Listado de Pólizas
-   - /polizas/:id → Detalle de Póliza
-   - /polizas/nueva → Crear nueva Póliza
-
-2. Incluir el layout principal (Header, contenido, Footer) en todas las rutas
-
-3. Importar Bootstrap y el archivo de estilos personalizado del INS
-
-4. Configurar la variable de entorno VITE_API_URL apuntando a https://localhost:5001
-```
-
----
-
-### Paso 3.12: Actualizar index.html y estilos
-
-**🤖 PROMPT con Agente:**
-
-```
-@frontend-ins Actualiza el archivo index.html en la carpeta public/ del proyecto React para:
-
-1. Agregar Google Fonts (Montserrat y Open Sans)
-2. Agregar meta tags apropiados en español
-3. Título: "Sistema de Seguros de Vehículos - Grupo INS"
-4. Favicon del INS si está disponible
-
-También crea un archivo .env con:
-VITE_API_URL=https://localhost:5001
-```
-
----
-
-### Paso 3.13: Ejecutar el Frontend
+### Paso 3.7: Ejecutar el Frontend
 
 **🤖 PROMPT en Modo Agent:**
 
@@ -1109,7 +1003,7 @@ Abre el navegador en la URL indicada (generalmente `http://localhost:5173`).
 - [ ] El frontend carga sin errores en el navegador
 - [ ] Los estilos INS se aplican correctamente
 - [ ] La página de inicio muestra las secciones diseñadas
-- [ ] El listado de pólizas funciona con datos mock
+- [ ] El listado de pólizas carga datos desde la API
 - [ ] Las operaciones CRUD (crear, ver, editar, eliminar) funcionan
 
 ---
