@@ -500,26 +500,6 @@ Crea el archivo .github/copilot-instructions.md con instrucciones para que Copil
 - Variables privadas: _camelCase
 - DTOs: EntidadDto, CrearEntidadSolicitud, ActualizarEntidadSolicitud
 
-## Estructura del Proyecto
-Cada funcionalidad debe estar en: /Funcionalidades/{Nombre}/
-- {Nombre}.cs (Entidad)
-- {Nombre}Dto.cs (DTOs)
-- {Nombre}Endpoints.cs (Minimal API endpoints con MapGroup)
-
-## Documentación
-- XML comments en español para todas las APIs públicas
-- Documentar parámetros y valores de retorno
-
-## INS Específico
-- Terminología oficial: Póliza, Cobertura, Asegurado, Reclamo, Vehículo, Prima
-- Códigos de provincia según división territorial de Costa Rica (01-07)
-- Provincias: San José, Alajuela, Cartago, Heredia, Guanacaste, Puntarenas, Limón
-- Formatos de fecha: dd/MM/yyyy para display, ISO 8601 para API
-
-## Seguridad
-- Nunca loggear datos sensibles (cédula, datos personales)
-- Validar todas las entradas del usuario
-
 ## Manejo de Errores
 - Retornar ProblemDetails en errores HTTP
 - Loggear excepciones con contexto suficiente
@@ -573,24 +553,6 @@ dotnet add INS.SegurosVehiculos.Pruebas reference INS.SegurosVehiculos.API
 
 ```
 Basándote en la especificación #file:docs/especificaciones/especificacion-sistema.md y el modelo de dominio #file:docs/especificaciones/modelo-dominio.md, implementa la funcionalidad principal de gestión de pólizas de seguro usando Minimal API.
-
-Crea los archivos en src/INS.SegurosVehiculos.API/Funcionalidades/Polizas/ con:
-
-1. **Poliza.cs** — Entidad con propiedades del modelo de dominio:
-   - Enums para estados y tipos según la especificación
-   - Propiedades con Data Annotations para validación
-
-2. **PolizaDto.cs** — DTOs para transferencia de datos (PolizaDto, CrearPolizaSolicitud, ActualizarPolizaSolicitud)
-
-3. **PolizaEndpoints.cs** — Clase estática con método de extensión MapPolizaEndpoints(this WebApplication app) usando MapGroup("/api/v1/polizas"):
-   - GET / (listar)
-   - GET /{id} (obtener por id)
-   - POST / (crear)
-   - PUT /{id} (actualizar)
-   - DELETE /{id} (eliminar)
-   - Usar el DbContext directamente (sin repositorio)
-   - Async/await en todas las operaciones
-   - Documentación con WithName y WithOpenApi
 
 Muéstrame el plan antes de ejecutar
 ```
