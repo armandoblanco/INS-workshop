@@ -750,8 +750,8 @@ Eres un experto en desarrollo frontend para el Grupo INS (Instituto Nacional de 
 - Usar terminología oficial de seguros (Póliza, Cobertura, Asegurado, Reclamo, Prima, etc.)
 
 ## Tecnologías
-- Blazor WebAssembly (.NET 8)
-- CSS3 con variables personalizadas (custom properties)
+- Usa react (.NET 8)
+- Usa Boostrap y CSS3 con variables personalizadas (custom properties)
 - HTML5 semántico
 
 ## Accesibilidad (WCAG AA)
