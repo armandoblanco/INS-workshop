@@ -44,7 +44,7 @@ Este workshop práctico te guiará en el desarrollo de un **Sistema de Registro 
 | **Arquitectura** | Minimal API |
 | **Idioma** | Español (código, comentarios, documentación) |
 | **Base de datos** | InMemory (sin dependencias externas) |
-| **Frontend** | Blazor WebAssembly |
+| **Frontend** | React con Bootstrap |
 
 ---
 
@@ -727,7 +727,7 @@ Muéstrame el plan primero
 - ✅ Crear un agente personalizado especializado
 - ✅ Usar el agente para desarrollo frontend
 - ✅ Aplicar estilos institucionales del INS
-- ✅ Consumir la API REST desde Blazor
+- ✅ Consumir la API REST desde React
 
 ---
 
@@ -840,12 +840,15 @@ Describe el estilo visual para:
 - Tablas
 
 ## Estructura de Archivos
-Organiza los componentes Blazor así:
-/Components
-  /Layout
-  /Paginas
-  /Compartidos
-/wwwroot
+Organiza los componentes React así:
+/src
+  /components
+    /layout
+    /paginas
+    /compartidos
+  /services
+  /models
+/public
   /css
   /img
 ```
@@ -854,23 +857,27 @@ Organiza los componentes Blazor así:
 
 ---
 
-### Paso 3.4: Crear proyecto Blazor
+### Paso 3.4: Crear proyecto React
 
 **🤖 PROMPT en Modo Agent:**
 
 ```
-Crea un proyecto Blazor WebAssembly llamado INS.SegurosVehiculos.Web con .NET 8 en la carpeta src y agrégalo a la solución INS.SegurosVehiculos.sln
+Crea un proyecto React en la carpeta src/ins-seguros-web usando Vite como bundler.
+Usa TypeScript y agrega Bootstrap 5 como dependencia.
+El proyecto será el frontend del sistema de seguros de vehículos del INS.
 ```
 
 **📝 Alternativa manual:**
 
 ```powershell
 cd src
-dotnet new blazorwasm -n INS.SegurosVehiculos.Web -f net8.0
-dotnet sln add INS.SegurosVehiculos.Web
+npm create vite@latest ins-seguros-web -- --template react-ts
+cd ins-seguros-web
+npm install
+npm install bootstrap@5
 ```
 
-**✅ Verificar:** El proyecto aparece en la solución (`dotnet sln list`)
+**✅ Verificar:** El proyecto inicia correctamente (`npm run dev`)
 
 ---
 
@@ -901,7 +908,7 @@ Usa los estilos definidos en el agente frontend-ins.md
 **🤖 PROMPT con Agente:**
 
 ```
-@frontend-ins Crea el layout principal de la aplicación Blazor.
+@frontend-ins Crea el layout principal de la aplicación React.
 
 Quiero un diseño que replique la estructura del sitio oficial del INS con:
 
@@ -920,7 +927,7 @@ El layout debe ser completamente responsive y usar los estilos definidos en el t
 **🤖 PROMPT con Agente:**
 
 ```
-@frontend-ins Crea componentes Blazor reutilizables para el sistema de seguros de vehículos.
+@frontend-ins Crea componentes React reutilizables para el sistema de seguros de vehículos.
 
 Necesito los siguientes componentes:
 
@@ -958,7 +965,7 @@ La página debe incluir:
 
 5. Un call-to-action final para contacto
 
-La página debe ser la ruta principal ("/") y ser completamente responsive
+La página debe ser la ruta principal ("/") usando React Router y ser completamente responsive
 ```
 
 ---
@@ -968,21 +975,33 @@ La página debe ser la ruta principal ("/") y ser completamente responsive
 **🤖 PROMPT con Agente:**
 
 ```
-@frontend-ins Crea un servicio para consumir la API REST de seguros de vehículos.
+@frontend-ins Crea un servicio TypeScript para consumir la API REST de seguros de vehículos.
+
+## API a consumir
+El frontend consume la API REST de INS.SegurosVehiculos.API:
+- GET /api/v1/polizas — listar pólizas
+- GET /api/v1/polizas/{id} — obtener póliza por ID
+- POST /api/v1/polizas — crear nueva póliza
+- PUT /api/v1/polizas/{id} — actualizar póliza
+- DELETE /api/v1/polizas/{id} — eliminar póliza
+- GET /api/v1/vehiculos — listar vehículos
 
 El servicio debe:
 
-1. Definir los modelos/DTOs necesarios para representar pólizas, vehículos, respuestas paginadas y filtros de búsqueda
+1. Definir interfaces TypeScript para representar pólizas, vehículos y respuestas de la API
 
-2. Crear una interface con métodos para:
-   - Obtener lista de pólizas con filtros y paginación
-   - Obtener una póliza por su identificador
-   - Obtener pólizas destacadas para la página principal
+2. Crear un servicio con métodos para todas las operaciones CRUD:
+   - Obtener lista de pólizas
+   - Obtener una póliza por su ID
+   - Crear una nueva póliza
+   - Actualizar una póliza existente
+   - Eliminar una póliza
+   - Obtener lista de vehículos
 
-3. Implementar el servicio usando HttpClient con:
+3. Implementar usando fetch con:
    - Manejo de errores apropiado
-   - Serialización JSON
-   - URL base configurable
+   - Tipado TypeScript estricto
+   - URL base configurable vía variable de entorno (VITE_API_URL)
 
 Por ahora, implementa con datos de ejemplo hardcodeados (mock) para poder probar sin la API. Incluye comentarios indicando dónde conectar con la API real
 ```
@@ -994,7 +1013,7 @@ Por ahora, implementa con datos de ejemplo hardcodeados (mock) para poder probar
 **🤖 PROMPT con Agente:**
 
 ```
-@frontend-ins Crea una página completa para listar y buscar pólizas de seguro.
+@frontend-ins Crea una página React completa para listar, buscar y gestionar pólizas de seguro.
 
 La página necesita:
 
@@ -1008,48 +1027,56 @@ La página necesita:
 
 3. Un grid responsive de tarjetas de póliza usando el componente creado anteriormente
 
-4. Manejo de diferentes estados de la página:
-   - Estado de carga con el indicador
+4. Botón para crear nueva póliza que abra un formulario/modal
+
+5. Acciones por póliza: ver detalle, editar y eliminar (con confirmación)
+
+6. Manejo de diferentes estados:
+   - Estado de carga con spinner
    - Estado vacío cuando no hay resultados
    - Estado de error con opción de reintentar
 
-5. Paginación para navegar entre páginas de resultados
-
-La página debe consumir el servicio de pólizas e inyectarlo apropiadamente
+Usa hooks de React (useState, useEffect) y el servicio HTTP creado anteriormente
 ```
 
 ---
 
-### Paso 3.11: Configurar Program.cs del Frontend
+### Paso 3.11: Configurar App.tsx y Rutas
 
 **🤖 PROMPT con Agente:**
 
 ```
-@frontend-ins Configura el Program.cs del proyecto web para:
+@frontend-ins Configura el archivo App.tsx del proyecto React para:
 
-1. Registrar el HttpClient con la URL base de la API:
-   - Usa https://localhost:5001 para desarrollo (mismo puerto configurado en la API)
+1. Configurar React Router con las siguientes rutas:
+   - / → Página de Inicio
+   - /polizas → Listado de Pólizas
+   - /polizas/:id → Detalle de Póliza
+   - /polizas/nueva → Crear nueva Póliza
 
-2. Registrar el servicio de pólizas en el contenedor de inyección de dependencias
+2. Incluir el layout principal (Header, contenido, Footer) en todas las rutas
 
-3. Cualquier otra configuración necesaria para que la aplicación funcione correctamente
+3. Importar Bootstrap y el archivo de estilos personalizado del INS
+
+4. Configurar la variable de entorno VITE_API_URL apuntando a https://localhost:5001
 ```
 
 ---
 
-### Paso 3.12: Actualizar referencias de estilos
+### Paso 3.12: Actualizar index.html y estilos
 
 **🤖 PROMPT con Agente:**
 
 ```
-@frontend-ins Actualiza src/INS.SegurosVehiculos.Web/wwwroot/index.html para:
+@frontend-ins Actualiza el archivo index.html en la carpeta public/ del proyecto React para:
 
-1. Agregar referencia al archivo tema-ins.css
-2. Agregar Google Fonts (Montserrat y Open Sans)
-3. Agregar meta tags apropiados en español
-4. Título: "Sistema de Seguros de Vehículos - Grupo INS"
+1. Agregar Google Fonts (Montserrat y Open Sans)
+2. Agregar meta tags apropiados en español
+3. Título: "Sistema de Seguros de Vehículos - Grupo INS"
+4. Favicon del INS si está disponible
 
-Mantén la estructura existente de Blazor
+También crea un archivo .env con:
+VITE_API_URL=https://localhost:5001
 ```
 
 ---
@@ -1061,7 +1088,7 @@ Mantén la estructura existente de Blazor
 ```
 Ejecuta ambos proyectos:
 1. Primero inicia INS.SegurosVehiculos.API en una terminal
-2. Luego inicia INS.SegurosVehiculos.Web en otra terminal
+2. Luego inicia el frontend React en otra terminal
 ```
 
 **📝 Alternativa manual:**
@@ -1072,16 +1099,18 @@ cd src/INS.SegurosVehiculos.API
 dotnet run
 
 # Terminal 2: Ejecutar Frontend
-cd src/INS.SegurosVehiculos.Web
-dotnet run
+cd src/ins-seguros-web
+npm run dev
 ```
 
-Abre el navegador en la URL indicada (generalmente `https://localhost:5002` o similar).
+Abre el navegador en la URL indicada (generalmente `http://localhost:5173`).
 
 **✅ Verificar antes de continuar:**
 - [ ] El frontend carga sin errores en el navegador
 - [ ] Los estilos INS se aplican correctamente
 - [ ] La página de inicio muestra las secciones diseñadas
+- [ ] El listado de pólizas funciona con datos mock
+- [ ] Las operaciones CRUD (crear, ver, editar, eliminar) funcionan
 
 ---
 
@@ -1092,8 +1121,9 @@ Abre el navegador en la URL indicada (generalmente `https://localhost:5002` o si
 | El agente @frontend-ins no responde | Recarga VS Code después de crear el archivo del agente |
 | CORS error al conectar con API | Verifica que la API tenga CORS habilitado para localhost |
 | Estilos no se aplican | Revisa que `index.html` referencie el archivo CSS correcto |
-| Componentes no se renderizan | Verifica los `@using` en `_Imports.razor` |
-| HttpClient error | Confirma que la URL base coincida con el puerto de la API |
+| Componentes no se renderizan | Verifica los imports en los archivos .tsx |
+| Error de fetch / conexión | Confirma que VITE_API_URL en `.env` coincida con el puerto de la API |
+| npm run dev falla | Ejecuta `npm install` para asegurar que las dependencias estén instaladas |
 
 ---
 
@@ -1600,12 +1630,13 @@ Al terminar el workshop, deberías tener:
 - [ ] Swagger funcionando en `/swagger`
 
 ### Frontend
-- [ ] Proyecto Blazor WebAssembly
+- [ ] Proyecto React con Vite y TypeScript
 - [ ] Archivo CSS con estilos institucionales INS
-- [ ] `Components/Layout/MainLayout.razor`
-- [ ] `Components/Pages/Inicio.razor`
-- [ ] `Components/Pages/Polizas.razor`
-- [ ] Componentes compartidos (TarjetaPoliza, etc.)
+- [ ] Layout principal (Header, Footer)
+- [ ] Página de Inicio
+- [ ] Página de Listado de Pólizas con CRUD
+- [ ] Componentes reutilizables (TarjetaPoliza, etc.)
+- [ ] Servicio HTTP consumiendo la API de pólizas y vehículos
 
 ### Pruebas
 - [ ] Pruebas unitarias para entidad Poliza
@@ -1628,7 +1659,9 @@ Al terminar el workshop, deberías tener:
 - [GitHub Copilot Docs](https://docs.github.com/en/copilot)
 - [VS Code + Copilot](https://code.visualstudio.com/docs/copilot/overview)
 - [.NET 8 Documentation](https://learn.microsoft.com/en-us/dotnet/core/whats-new/dotnet-8)
-- [Blazor Documentation](https://learn.microsoft.com/en-us/aspnet/core/blazor/)
+- [React Documentation](https://react.dev/)
+- [Vite Documentation](https://vitejs.dev/)
+- [Bootstrap 5](https://getbootstrap.com/docs/5.3/)
 
 ### Patrones y Arquitectura
 - [Minimal API (.NET 8)](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis)
@@ -1690,7 +1723,7 @@ Este taller usa `Microsoft.EntityFrameworkCore.InMemory` por las siguientes razo
 
 **Workshop desarrollado para:** Grupo INS (Instituto Nacional de Seguros de Costa Rica)
 
-**Tecnologías:** GitHub Copilot, .NET 8, Blazor WebAssembly, C#
+**Tecnologías:** GitHub Copilot, .NET 8, React, TypeScript, Bootstrap, C#
 
 **Duración:** 3 horas
 
