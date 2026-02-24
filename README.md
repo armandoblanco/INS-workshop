@@ -389,9 +389,7 @@ Crea el archivo docs/especificaciones/especificacion-sistema.md con:
    - CRUD de pólizas de seguro (Responsabilidad Civil, Comprensivo, Todo Riesgo, Básico)
    - Registro de vehículos con datos técnicos (placa, marca, modelo, año, chasis)
    - Gestión de coberturas con tipos y montos máximos
-   - Registro de asegurados con datos de ubicación (provincia, cantón)
-   - Gestión de reclamos con seguimiento de estado
-   - Estadísticas agregadas por provincia
+   
 
 4. **Modelo de Datos** (diagrama Mermaid)
 
